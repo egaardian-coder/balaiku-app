@@ -107,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
               /// TITLE
               const Text(
                 "Selamat Datang",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 5),
