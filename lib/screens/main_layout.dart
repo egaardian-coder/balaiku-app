@@ -5,25 +5,33 @@ import 'sos_screen.dart';
 import 'profile_screen.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+  final int initialIndex; // Tambahan parameter untuk melompat ke tab tertentu
+  const MainLayout({super.key, this.initialIndex = 0});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0;
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const RiwayatScreen(),
-    const SosScreen(),
-    const ProfileScreen(),
-  ];
+  late int _currentIndex;
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex; // Gunakan index yang dikirim
+    _screens = [
+      const HomeScreen(),
+      const RiwayatScreen(),
+      const SosScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, -5))]
@@ -32,7 +40,7 @@ class _MainLayoutState extends State<MainLayout> {
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           currentIndex: _currentIndex,
-          selectedItemColor: const Color(0xFF185ABD), // Biru gelap sesuai UI UX
+          selectedItemColor: const Color(0xFF185ABD),
           unselectedItemColor: Colors.grey,
           elevation: 0,
           onTap: (index) => setState(() => _currentIndex = index),

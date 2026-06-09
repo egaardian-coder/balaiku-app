@@ -21,6 +21,7 @@ class DatabaseHelper {
   }
 
   Future _createDB(Database db, int version) async {
+    // Tabel untuk Pelayanan Surat
     await db.execute('''
       CREATE TABLE surat (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +32,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // Tabel untuk Form Laporan Warga
     await db.execute('''
       CREATE TABLE laporan (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,6 +43,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // Tabel untuk Pasar Warga (UMKM)
     await db.execute('''
       CREATE TABLE umkm (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,35 +76,5 @@ class DatabaseHelper {
   Future<int> insertLaporan(Map<String, dynamic> data) async {
     final db = await instance.database;
     return await db.insert('laporan', data);
-  }
-
-  // --- FUNGSI UNTUK RIWAYAT GABUNGAN ---
-  Future<List<Map<String, dynamic>>> getRiwayat(String status) async {
-    final db = await instance.database;
-    
-    final surat = await db.query('surat', where: 'status = ?', whereArgs: [status]);
-    final laporan = await db.query('laporan', where: 'status = ?', whereArgs: [status]);
-
-    List<Map<String, dynamic>> riwayatGabungan = [];
-
-    for (var s in surat) {
-      riwayatGabungan.add({
-        'judul': s['jenis_surat'],
-        'tanggal': s['tanggal'],
-        'status': s['status'],
-        'tipe': 'surat',
-      });
-    }
-
-    for (var l in laporan) {
-      riwayatGabungan.add({
-        'judul': l['jenis_laporan'],
-        'tanggal': l['tanggal'],
-        'status': l['status'],
-        'tipe': 'laporan',
-      });
-    }
-
-    return riwayatGabungan.reversed.toList();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_appbar.dart';
 import '../helpers/database_helper.dart';
+import 'main_layout.dart'; // Penting: Import MainLayout di sini
 
 class SuratScreen extends StatefulWidget {
   const SuratScreen({super.key});
@@ -26,7 +27,13 @@ class _SuratScreenState extends State<SuratScreen> {
     if (!mounted) return;
     keperluanCtrl.clear();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pengajuan Surat berhasil dikirim!')));
-    Navigator.pop(context); 
+    
+    // Melompat otomatis ke tab Riwayat (index 1)
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MainLayout(initialIndex: 1)),
+      (route) => false,
+    );
   }
 
   @override
@@ -103,7 +110,13 @@ class _LaporanScreenState extends State<LaporanScreen> {
     if (!mounted) return;
     deskripsiCtrl.clear();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Laporan Anda berhasil dikirim ke Dasbor Desa!')));
-    Navigator.pop(context);
+    
+    // Melompat otomatis ke tab Riwayat (index 1)
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MainLayout(initialIndex: 1)),
+      (route) => false,
+    );
   }
 
   @override
