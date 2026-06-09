@@ -11,8 +11,16 @@ class BalaiKuApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: const Color(0xFF0D6EFD),
+        primaryColor: const Color(0xFF185ABD),
+        // Menyesuaikan warna seluruh aplikasi dengan warna background logo
+        scaffoldBackgroundColor: const Color(0xFFF4F7FC), 
         fontFamily: 'Poppins',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent, // Dibuat transparan agar menyatu dengan scaffold
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
       ),
       home: const SplashScreen(),
     );

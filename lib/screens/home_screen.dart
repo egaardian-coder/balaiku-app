@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_appbar.dart';
 import 'pasar_warga_screen.dart';
+import 'layanan_screen.dart';
+import 'daftar_warga_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,28 +10,24 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset('assets/images/Balaiku.png', height: 40, errorBuilder: (c, e, s) => const Text('BalaiKu', style: TextStyle(fontWeight: FontWeight.bold))),
-        centerTitle: true,
-      ),
+      appBar: const CustomAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kartu Warga Terdaftar
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10)]),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Warga Terdaftar', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                  const SizedBox(height: 5),
-                  const Text('Darwin Nainggolan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0D6EFD))),
-                  const Text('RT 01 RW 02', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const Divider(height: 20),
-                  const Row(
+                  Text('Warga Terdaftar', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  SizedBox(height: 5),
+                  Text('Darwin Nainggolan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0D6EFD))),
+                  Text('RT 01 RW 02', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Divider(height: 20),
+                  Row(
                     children: [
                       Icon(Icons.campaign, color: Colors.orange),
                       SizedBox(width: 10),
@@ -39,8 +38,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 25),
-            
-            // Grid Menu Layanan
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -48,13 +45,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               children: [
-                _buildMenu(context, 'Buat Surat', Icons.email, Colors.blue, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SuratScreenDummy()))),
-                _buildMenu(context, 'Form Laporan', Icons.description, Colors.blueAccent, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LaporanScreenDummy()))),
+                _buildMenu(context, 'Buat Surat', Icons.email, Colors.blue, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SuratScreen()))),
+                _buildMenu(context, 'Form Laporan', Icons.description, Colors.blueAccent, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LaporanScreen()))),
                 _buildMenu(context, 'Pasar Warga', Icons.storefront, Colors.orange, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PasarWargaScreen()))),
-                _buildMenu(context, 'Daftar Warga', Icons.groups, Colors.green, () {}),
+                _buildMenu(context, 'Daftar Warga', Icons.groups, Colors.green, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DaftarWargaScreen()))),
               ],
             ),
-            
             const SizedBox(height: 25),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,8 +60,6 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            
-            // List Aktivitas
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.grey.shade200)),
@@ -103,6 +97,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-class SuratScreenDummy extends StatelessWidget { const SuratScreenDummy({super.key}); @override Widget build(BuildContext context) { return Scaffold(appBar: AppBar(title: const Text('Pelayanan Surat')), body: const Center(child: Text('Halaman Buat Surat'))); } }
-class LaporanScreenDummy extends StatelessWidget { const LaporanScreenDummy({super.key}); @override Widget build(BuildContext context) { return Scaffold(appBar: AppBar(title: const Text('Form Laporan')), body: const Center(child: Text('Halaman Laporan Warga'))); } }

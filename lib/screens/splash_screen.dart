@@ -3,6 +3,7 @@ import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -11,8 +12,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen())));
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+    });
   }
+
   @override
-  Widget build(BuildContext context) => const Scaffold(backgroundColor: Color(0xFF0D6EFD), body: Center(child: Icon(Icons.home, size: 100, color: Colors.white)));
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // Tidak perlu set warna di sini, otomatis mengikuti main.dart
+      body: Center(
+        child: Image.asset('assets/images/Balaiku.png', width: 280),
+      ),
+    );
+  }
 }
