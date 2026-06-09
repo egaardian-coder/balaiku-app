@@ -6,20 +6,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: true,
+      automaticallyImplyLeading: true, // Memunculkan tombol back otomatis jika ada
       centerTitle: true,
-      toolbarHeight: 140, // Tinggi dibuat ekstra besar
-      backgroundColor: Colors.transparent, // Menyatu dengan warna background halaman
+      backgroundColor: Colors.transparent, 
       elevation: 0,
+      toolbarHeight: 100, // Memberikan ruang lega untuk logo di tengah atas
       title: Image.asset(
         'assets/images/Balaiku.png', 
-        height: 120, // Logo dibesarkan
+        height: 85, // Ukuran proporsional untuk header
         fit: BoxFit.contain,
-        errorBuilder: (c, e, s) => const Text('BalaiKu', style: TextStyle(color: Color(0xFF185ABD), fontWeight: FontWeight.bold, fontSize: 32)),
+        errorBuilder: (c, e, s) => const Text(
+          'BalaiKu', 
+          style: TextStyle(color: Color(0xFF185ABD), fontWeight: FontWeight.bold, fontSize: 28)
+        ),
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(140);
+  Size get preferredSize => const Size.fromHeight(100);
 }

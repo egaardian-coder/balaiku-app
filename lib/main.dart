@@ -12,11 +12,11 @@ class BalaiKuApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF185ABD),
-        // Menyesuaikan warna seluruh aplikasi dengan warna background logo
-        scaffoldBackgroundColor: const Color(0xFFF4F7FC), 
+        // Menggunakan kode warna dari Figma Anda
+        scaffoldBackgroundColor: const Color(0xFFEAF5FD), 
         fontFamily: 'Poppins',
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent, // Dibuat transparan agar menyatu dengan scaffold
+          backgroundColor: Colors.transparent, // Transparan agar warna EAF5FD tembus ke atas
           elevation: 0,
           scrolledUnderElevation: 0,
           iconTheme: IconThemeData(color: Colors.black),
