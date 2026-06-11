@@ -13,7 +13,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
     });
   }
 
@@ -21,9 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Tidak perlu set warna di sini, otomatis mengikuti main.dart
-      body: Center(
-        child: Image.asset('assets/images/Balaiku.png', width: 280),
-      ),
+      body: Center(child: Image.asset('assets/images/Balaiku.png', width: 280)),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'sos_screen.dart';
 import 'profile_screen.dart';
 
 class MainLayout extends StatefulWidget {
-  final int initialIndex; // Tambahan parameter untuk melompat ke tab tertentu
+  final int initialIndex;
   const MainLayout({super.key, this.initialIndex = 0});
 
   @override
@@ -14,27 +14,35 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   late int _currentIndex;
-  late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex; // Gunakan index yang dikirim
-    _screens = [
-      const HomeScreen(),
-      const RiwayatScreen(),
-      const SosScreen(),
-      const ProfileScreen(),
-    ];
+    _currentIndex = widget.initialIndex;
   }
 
   @override
   Widget build(BuildContext context) {
+    // KUNCI PERBAIKAN: Daftar layar dipindah ke dalam build dan 'const' dihapus
+    // agar Home dan Profile selalu memuat data terbaru setiap kali tab diklik.
+    final List<Widget> screens = [
+      HomeScreen(), // <-- Tanpa const
+      const RiwayatScreen(),
+      const SosScreen(),
+      ProfileScreen(), // <-- Tanpa const
+    ];
+
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, -5))]
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -46,8 +54,14 @@ class _MainLayoutState extends State<MainLayout> {
           onTap: (index) => setState(() => _currentIndex = index),
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-            BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Riwayat'),
-            BottomNavigationBarItem(icon: Icon(Icons.sos, color: Colors.red), label: 'SOS'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'Riwayat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sos, color: Colors.red),
+              label: 'SOS',
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
         ),

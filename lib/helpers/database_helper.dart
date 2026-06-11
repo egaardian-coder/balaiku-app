@@ -77,4 +77,26 @@ class DatabaseHelper {
     final db = await instance.database;
     return await db.insert('laporan', data);
   }
+
+  Future<List<Map<String, dynamic>>> getAllSurat() async {
+    final db = await instance.database;
+    return await db.query('surat', orderBy: 'id DESC');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllLaporan() async {
+    final db = await instance.database;
+    return await db.query('laporan', orderBy: 'id DESC');
+  }
+
+  // INI ADALAH FUNGSI BARU UNTUK MENGHAPUS DATA
+
+  Future<int> deleteSurat(int id) async {
+    final db = await instance.database;
+    return await db.delete('surat', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteLaporan(int id) async {
+    final db = await instance.database;
+    return await db.delete('laporan', where: 'id = ?', whereArgs: [id]);
+  }
 }
