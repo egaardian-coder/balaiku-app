@@ -9,7 +9,12 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('balaiku.db');
+
+    // ==========================================
+    // PERUBAHAN PENTING: Nama diubah menjadi balaiku_v2.db
+    // agar database ter-reset dan kolom no_telepon berhasil dibuat.
+    // ==========================================
+    _database = await _initDB('balaiku_v2.db');
     return _database!;
   }
 
@@ -43,7 +48,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // Tabel untuk Pasar Warga (UMKM)
+    // Tabel untuk Pasar Warga (UMKM) - DITAMBAHKAN no_telepon
     await db.execute('''
       CREATE TABLE umkm (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +56,8 @@ class DatabaseHelper {
         penjual TEXT NOT NULL,
         alamat TEXT NOT NULL,
         harga TEXT NOT NULL,
-        gambar TEXT NOT NULL
+        gambar TEXT NOT NULL,
+        no_telepon TEXT NOT NULL
       )
     ''');
   }
@@ -88,8 +94,7 @@ class DatabaseHelper {
     return await db.query('laporan', orderBy: 'id DESC');
   }
 
-  // INI ADALAH FUNGSI BARU UNTUK MENGHAPUS DATA
-
+  // --- INI ADALAH FUNGSI BARU UNTUK MENGHAPUS DATA ---
   Future<int> deleteSurat(int id) async {
     final db = await instance.database;
     return await db.delete('surat', where: 'id = ?', whereArgs: [id]);

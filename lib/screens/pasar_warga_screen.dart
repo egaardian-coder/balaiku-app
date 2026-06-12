@@ -11,6 +11,7 @@ class PasarWargaScreen extends StatefulWidget {
 
 class _PasarWargaScreenState extends State<PasarWargaScreen> {
   List<Map<String, dynamic>> items = [];
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -21,6 +22,7 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
   Future<void> _loadData() async {
     var data = await DatabaseHelper.instance.getAllUMKM();
 
+    // DIPERBAIKI: Menambahkan 'no_telepon' pada data default agar tidak crash
     if (data.isEmpty) {
       await DatabaseHelper.instance.insertUMKM({
         'nama_usaha': 'Kipas Dinding Arashi',
@@ -28,6 +30,7 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
         'alamat': 'RT. 13 RW. 02\nJL. Rustam Tekno, Tanjung Senang',
         'harga': 'Rp. 120.000',
         'gambar': 'assets/images/kipas.jpg',
+        'no_telepon': '081234567890',
       });
       await DatabaseHelper.instance.insertUMKM({
         'nama_usaha': 'Play Station 5',
@@ -35,6 +38,7 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
         'alamat': 'RT. 13 RW. 02\nJL. Raja Khodir, Tanjung Senang',
         'harga': 'Rp. 120.000',
         'gambar': 'assets/images/ps.jpg',
+        'no_telepon': '085712345678',
       });
       data = await DatabaseHelper.instance.getAllUMKM();
     }
@@ -49,6 +53,8 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
     final penjualCtrl = TextEditingController();
     final alamatCtrl = TextEditingController();
     final hargaCtrl = TextEditingController();
+    final noTelpCtrl =
+        TextEditingController(); // Tambahan controller nomor telepon
 
     showDialog(
       context: context,
@@ -72,6 +78,13 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
               TextField(
                 controller: penjualCtrl,
                 decoration: const InputDecoration(labelText: 'Nama Penjual'),
+              ),
+              TextField(
+                controller: noTelpCtrl, // Form isian Nomor Telepon asli
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'No. Telepon / WA',
+                ),
               ),
               TextField(
                 controller: alamatCtrl,
@@ -98,12 +111,14 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
             onPressed: () async {
               if (namaCtrl.text.isEmpty || hargaCtrl.text.isEmpty) return;
 
+              // DIPERBAIKI: Menyimpan data ketikan user beserta nomor teleponnya ke DB
               await DatabaseHelper.instance.insertUMKM({
                 'nama_usaha': namaCtrl.text,
                 'penjual': penjualCtrl.text,
                 'alamat': alamatCtrl.text,
                 'harga': hargaCtrl.text,
-                'gambar': 'assets/images/Balaiku.png', // Gambar default logo
+                'no_telepon': noTelpCtrl.text.isEmpty ? '-' : noTelpCtrl.text,
+                'gambar': 'assets/images/Balaiku.png',
               });
 
               if (!context.mounted) return;
@@ -122,13 +137,23 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // --- LOGIKA FILTER PENCARIAN ---
+    final itemsDisaring = items.where((item) {
+      final namaProduk = item['nama_usaha'].toString().toLowerCase();
+      final namaPenjual = item['penjual'].toString().toLowerCase();
+      final query = _searchQuery.toLowerCase();
+
+      return namaProduk.contains(query) || namaPenjual.contains(query);
+    }).toList();
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const CustomAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
             child: Text(
               'Pasar Warga',
               style: TextStyle(
@@ -138,14 +163,61 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
               ),
             ),
           ),
+
+          // --- FORM PENCARIAN ---
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Cari nama produk atau penjual...',
+                hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 20,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFF185ABD)),
+                ),
+              ),
+            ),
+          ),
+
           Expanded(
             child: items.isEmpty
                 ? const Center(child: CircularProgressIndicator())
+                : itemsDisaring.isEmpty
+                ? Center(
+                    child: Text(
+                      'Data yang ditelusuri tidak ada.',
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 15,
+                      ),
+                    ),
+                  )
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    itemCount: items.length,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 5,
+                    ),
+                    itemCount: itemsDisaring.length,
                     itemBuilder: (context, index) {
-                      final item = items[index];
+                      final item = itemsDisaring[index];
                       return Card(
                         elevation: 2,
                         margin: const EdgeInsets.only(bottom: 15),
@@ -162,11 +234,11 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
                               child: Image.asset(
                                 item['gambar'],
                                 width: 120,
-                                height: 130,
+                                height: 140,
                                 fit: BoxFit.cover,
                                 errorBuilder: (c, e, s) => Container(
                                   width: 120,
-                                  height: 130,
+                                  height: 140,
                                   color: Colors.white,
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
@@ -189,6 +261,8 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
@@ -198,6 +272,28 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
                                         color: Colors.grey,
                                       ),
                                     ),
+                                    const SizedBox(height: 4),
+
+                                    // --- MENAMPILKAN NOMOR TELEPON ASLI DARI DATABASE ---
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.phone_android,
+                                          size: 14,
+                                          color: Colors.green,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          item['no_telepon'] ?? '-',
+                                          style: const TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
                                     Text(
                                       item['alamat'],
                                       style: const TextStyle(
@@ -205,7 +301,7 @@ class _PasarWargaScreenState extends State<PasarWargaScreen> {
                                         color: Colors.grey,
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 8),
                                     Text(
                                       item['harga'],
                                       style: const TextStyle(
